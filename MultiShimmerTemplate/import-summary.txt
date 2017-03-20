@@ -1,0 +1,108 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Risky Project Location:
+-----------------------
+The tools *should* handle project locations in any directory. However,
+due to bugs, placing projects in directories containing spaces in the
+path, or characters like ", ' and &, have had issues. We're working to
+eliminate these bugs, but to save yourself headaches you may want to
+move your project to a location where this is not a problem.
+C:\Users\User\Documents\Work\Shimmer\Android Studio\MultiShimmerTemplate
+                                            -                           
+
+Manifest Merging:
+-----------------
+Your project uses libraries that provide manifests, and your Eclipse
+project did not explicitly turn on manifest merging. In Android Gradle
+projects, manifests are always merged (meaning that contents from your
+libraries' manifests will be merged into the app manifest. If you had
+manually copied contents from library manifests into your app manifest
+you may need to remove these for the app to build correctly.
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+From MultiShimmerTemplate:
+* .gitignore
+* MultiShimmerTemplate.iml
+* ProjectResources\
+* ProjectResources\ST Database.vsd
+* ProjectResources\ST SystemOverview.vsd
+* Readme.txt
+* ic_launcher-web.png
+* proguard-project.txt
+From ShimmerAndroidInstrumentDriver:
+* .gitignore
+* ShimmerAndroidInstrumentDriver.iml
+* proguard-project.txt
+From ShimmerDriver:
+* .gitignore
+* ShimmerDriver.iml
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+guava-12.0.jar => com.google.guava:guava:12.0
+android-support-v4.jar => com.android.support:support-v4:19.1.0
+
+Potentially Missing Dependency:
+-------------------------------
+When we replaced the following .jar files with a Gradle dependency, we
+inferred the dependency version number from the filename. This
+specific version may not actually be available from the repository.
+If you get a build error stating that the dependency is missing, edit
+the version number to for example "+" to pick up the latest version
+instead. (This may require you to update your code if the library APIs
+have changed.)
+
+guava-12.0.jar => version 12.0 in com.google.guava:guava:12.0
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+In ShimmerDriver:
+* libs\commons-lang3-3.4.jar => shimmerDriver\libs\commons-lang3-3.4.jar
+* libs\commons-math-2.2.jar => shimmerDriver\libs\commons-math-2.2.jar
+* libs\ShimmerBiophysicalProcessingLibrary_Rev_0_10.jar => shimmerDriver\libs\ShimmerBiophysicalProcessingLibrary_Rev_0_10.jar
+* libs\vecmath-1.3.1.jar => shimmerDriver\libs\vecmath-1.3.1.jar
+* src\ => shimmerDriver\src\main\java\
+In ShimmerAndroidInstrumentDriver:
+* AndroidManifest.xml => shimmerAndroidInstrumentDriver\src\main\AndroidManifest.xml
+* libs\AndroidBluetoothLibrary.jar => shimmerAndroidInstrumentDriver\libs\AndroidBluetoothLibrary.jar
+* libs\androidplot-core-0.5.0-release.jar => shimmerAndroidInstrumentDriver\libs\androidplot-core-0.5.0-release.jar
+* lint.xml => shimmerAndroidInstrumentDriver\lint.xml
+* res\ => shimmerAndroidInstrumentDriver\src\main\res\
+* src\ => shimmerAndroidInstrumentDriver\src\main\java\
+In MultiShimmerTemplate:
+* AndroidManifest.xml => multiShimmerTemplate\src\main\AndroidManifest.xml
+* lint.xml => multiShimmerTemplate\lint.xml
+* res\ => multiShimmerTemplate\src\main\res\
+* src\ => multiShimmerTemplate\src\main\java\
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
