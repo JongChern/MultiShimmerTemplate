@@ -167,7 +167,7 @@ public class MainActivity extends Activity  implements Detector.FaceListener, De
 	    				}
 	    			});
 
-		Toast.makeText(getApplicationContext(), "Welcome to MultiShimmerTemplate", Toast.LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(), "Welcome to MultiShimmerTemplate, I have just made my first commit", Toast.LENGTH_LONG).show();
     }
     
     public MultiShimmerTemplateService getService(){
