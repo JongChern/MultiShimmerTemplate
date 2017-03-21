@@ -41,6 +41,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.res.Configuration;
 
+import com.affectiva.android.affdex.sdk.Frame;
+import com.affectiva.android.affdex.sdk.detector.CameraDetector;
+import com.affectiva.android.affdex.sdk.detector.CameraDetector.CameraEventListener;
+import com.affectiva.android.affdex.sdk.detector.Detector;
+import com.affectiva.android.affdex.sdk.detector.Face;
 import com.shimmerresearch.adapters.NavDrawerListAdapter;
 import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.model.NavDrawerItem;
@@ -48,12 +53,12 @@ import com.shimmerresearch.service.MultiShimmerTemplateService;
 import com.shimmerresearch.service.MultiShimmerTemplateService.LocalBinder;
 import com.shimmerresearch.tools.Logging;
 
-public class MainActivity extends Activity{
-	
+public class MainActivity extends Activity  implements Detector.FaceListener, Detector.ImageListener, CameraEventListener{
+
 	private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    
+
     private CharSequence mDrawerTitle;	// nav drawer title
     private CharSequence mTitle;    	// used to store app title
     // slide menu items
@@ -161,8 +166,8 @@ public class MainActivity extends Activity{
 	    					dialog.dismiss();
 	    				}
 	    			});
-	  
-	   
+
+		Toast.makeText(getApplicationContext(), "Welcome to MultiShimmerTemplate", Toast.LENGTH_LONG).show();
     }
     
     public MultiShimmerTemplateService getService(){
@@ -244,7 +249,7 @@ public class MainActivity extends Activity{
         }
 	  	
 	}
-	
+
 	private void setNavDrawerItems() {
 		
 		navDrawerItems.clear();
@@ -277,9 +282,29 @@ public class MainActivity extends Activity{
             }
 		}
     };
-	
-    
-    /* The click listner for ListView in the navigation drawer */
+
+	@Override
+	public void onCameraSizeSelected(int i, int i1, Frame.ROTATE rotate) {
+
+	}
+
+	@Override
+	public void onFaceDetectionStarted() {
+
+	}
+
+	@Override
+	public void onFaceDetectionStopped() {
+
+	}
+
+	@Override
+	public void onImageResults(List<Face> list, Frame frame, float v) {
+
+	}
+
+
+	/* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
