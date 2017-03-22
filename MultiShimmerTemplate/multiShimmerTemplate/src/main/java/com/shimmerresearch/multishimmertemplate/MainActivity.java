@@ -262,6 +262,8 @@ public class MainActivity extends Activity  implements Detector.FaceListener, De
 		navDrawerItems.add(new NavDrawerItem(mOptionsMenu[1], navMenuIcons.getResourceId(1, -1)));
 		// Blank
 		navDrawerItems.add(new NavDrawerItem(mOptionsMenu[2], navMenuIcons.getResourceId(2, -1)));
+		//Affectiva
+		navDrawerItems.add(new NavDrawerItem(mOptionsMenu[3], navMenuIcons.getResourceId(2, -1)));
 		
 		mDrawerList.setAdapter(adapter);	
 	}
@@ -332,6 +334,10 @@ public class MainActivity extends Activity  implements Detector.FaceListener, De
 		case 2:
 			fragment = new BlankFragment();
 			tag = "Blank";
+			break;
+		case 3: //New case for Affectiva
+			fragment = new AffectivaFragment();
+			tag = "Affectiva";
 			break;
 		default:
 			fragment = new DevicesFragment(); 
