@@ -1,9 +1,12 @@
 package com.shimmerresearch.multishimmertemplate;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.os.SystemClock;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +22,7 @@ import com.shimmerresearch.affectiva.AsyncFrameDetector;
 import com.shimmerresearch.affectiva.CameraHelper;
 import com.shimmerresearch.affectiva.CameraView;
 import com.shimmerresearch.affectiva.Metrics;
+import com.shimmerresearch.service.MultiShimmerTemplateService;
 
 import java.util.List;
 
@@ -142,6 +146,7 @@ public class AffectivaFragment extends Fragment implements CameraView.OnCameraVi
         cameraButton = (Button) rootView.findViewById(R.id.camera_button);
         captureButton = (Button) rootView.findViewById(R.id.capture_button);
         cameraToggle = (ToggleButton) rootView.findViewById(R.id.toggle_button);
+
 
         //To start and stop the camera
         cameraButton.setOnClickListener(new View.OnClickListener() {
@@ -345,7 +350,7 @@ public class AffectivaFragment extends Fragment implements CameraView.OnCameraVi
         if(timeStamp < lastReceivedTimeStamp)
             throw new RuntimeException("Got a timestamp out of order!");
         lastReceivedTimeStamp = timeStamp;
-        Log.e("Affectiva Fragment", String.valueOf(timeStamp));
+        //Log.e("Affectiva Fragment", String.valueOf(timeStamp));
 
         if (faces == null)
             return; //No faces detected
@@ -356,9 +361,32 @@ public class AffectivaFragment extends Fragment implements CameraView.OnCameraVi
         }
         else {
             Face face = faces.get(0);
-            String s = " ";
-            s = "Surprise score: "  + String.format("%.2f", getScore(7, face));
-            emotionScore.setText(s);
+            String[] s = {"ANGER", "CONTEMPT", "DISGUST", "FEAR", "JOY", "SADNESS", "SURPRISE"};
+
+            //Aggregate the emotion scores and send the data msg to the Shimmer Service
+            float score = 0;
+            float[] scoreData = new float[7];
+
+            for(int i = 0; i < 7; i++) {
+                score = getScore(i+1, face);
+                s[i] = s[i] + " score: " + String.format("%.2f", score);
+                scoreData[i] = score;
+            }
+
+            //Send the intent containing the data to the service, which will receive in onStartCommand()
+            Intent intent = new Intent(getActivity(), MultiShimmerTemplateService.class);
+            Bundle b = new Bundle();
+            b.putFloatArray("AFFECTIVA", scoreData);
+            intent.putExtras(b);
+            getActivity().startService(intent);
+
+            //Display the aggregated scores in the UI
+            String emotionText = "";
+            for(int i = 0; i < 7; i++) {
+                emotionText = emotionText + s[i] + "\n";
+            }
+            emotionScore.setText(emotionText);
+
         }
     }
 

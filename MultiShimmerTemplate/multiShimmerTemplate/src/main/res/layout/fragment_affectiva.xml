@@ -67,6 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:drawableTop="@drawable/ic_camera_back"
         android:textOff="Front Camera"
         android:textOn="Back Camera"/>
 

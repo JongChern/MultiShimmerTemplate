@@ -24,6 +24,7 @@
         <item>@drawable/ic_shimmer</item>
         <item>@drawable/ic_plot</item>
         <item>@drawable/ic_blank</item>
+        <item>@drawable/ic_affectiva_drawer</item>
     </array>
 
     <!-- Spinner with the sensors for calculating the hear rate -->

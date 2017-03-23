@@ -167,7 +167,7 @@ public class MainActivity extends Activity  implements Detector.FaceListener, De
 	    				}
 	    			});
 
-		Toast.makeText(getApplicationContext(), "Welcome to MultiShimmerTemplate, I have just made my first commit", Toast.LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(), "Welcome to MultiShimmerTemplate", Toast.LENGTH_LONG).show();
     }
     
     public MultiShimmerTemplateService getService(){
@@ -263,8 +263,8 @@ public class MainActivity extends Activity  implements Detector.FaceListener, De
 		// Blank
 		navDrawerItems.add(new NavDrawerItem(mOptionsMenu[2], navMenuIcons.getResourceId(2, -1)));
 		//Affectiva
-		navDrawerItems.add(new NavDrawerItem(mOptionsMenu[3], navMenuIcons.getResourceId(2, -1)));
-		
+		navDrawerItems.add(new NavDrawerItem(mOptionsMenu[3], navMenuIcons.getResourceId(3, -1)));
+
 		mDrawerList.setAdapter(adapter);	
 	}
 	

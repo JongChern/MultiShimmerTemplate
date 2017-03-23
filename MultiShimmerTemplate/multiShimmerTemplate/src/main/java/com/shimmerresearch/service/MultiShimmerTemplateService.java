@@ -44,6 +44,9 @@ import com.shimmerresearch.tools.Logging;
 
 public class MultiShimmerTemplateService extends Service {
 	private static final String TAG = "MyService";
+	private static final String AFFECTIVA = "Affectiva";
+	static String[] emotionLabels = {"ANGER", "CONTEMPT", "DISGUST", "FEAR", "JOY", "SADNESS", "SURPRISE"};
+
 	public static final int MESSAGE_NEW_ARROW_ANGLE=33;
 	public static final int MESSAGE_CONFIGURATION_CHANGE=34;
 	public static final int MESSAGE_WRITING_STOPED = 1;
@@ -52,6 +55,14 @@ public class MultiShimmerTemplateService extends Service {
 	private final IBinder mBinder = new LocalBinder();
 	public static HashMap<String, Object> mMultiShimmer = new HashMap<String, Object>(7);
 	public static HashMap<String, Logging> mLogShimmer = new HashMap<String, Logging>(7);
+
+//	//Add Logging for Affectiva SDK
+//	public static Logging affectivaLog1 = null;
+//	public static HashMap<String, Logging> mLogAffectiva = new HashMap<String, Logging>(7);
+
+	//Add float array to store the emotion scores
+	public static float[] emotionScore = new float[7];
+
 	public static String mLogFileName="Default";
 	public static HashMap<String, boolean[]> mExpandableStates = new HashMap<String, boolean[]>(7); // the max for bluetooth should be 7  
 	boolean[][] mPlotSelectedSignals = new boolean[7][Shimmer.MAX_NUMBER_OF_SIGNALS];
@@ -61,6 +72,7 @@ public class MultiShimmerTemplateService extends Service {
 	private static Handler mHandlerWrite=null;
 	private static boolean mGraphing=false;
 	private static boolean mWriting=false;
+	private static boolean mEmotionData = false;	//Add new boolean for the data from the Affectiva SDK
 	private static String mGraphBluetoothAddress=""; //used to filter the msgs passed to the handler
 	static boolean mNewData1=false;
 	static boolean mNewData2=false;
@@ -179,11 +191,30 @@ public class MultiShimmerTemplateService extends Service {
 		mLogShimmer.clear();
 		mConnectedShimmerBtAddresses.clear();
 	}
-	
-	
+
+	/**
+	 * To receive the data from the Affectiva SDK
+	 * @param intent
+	 * @param flags
+	 * @param startId
+	 * @return
+	 */
 	@Override
-	public void onStart(Intent intent, int startid) {
-		
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		Bundle b = null;
+		if(intent != null) {
+			b = intent.getExtras();
+		}
+		if(b!=null) {
+			float[] score = b.getFloatArray("AFFECTIVA");
+			//For testing purposes:
+			for(int i=0; i<7; i++) {
+				Log.v(AFFECTIVA, "Service has received: " + emotionLabels[i] + "\t" + String.format("%.2f", score[i]));
+			}
+			emotionScore = score;
+			mEmotionData = true;
+		}
+		return START_STICKY; //Service will continue running until it is explicitly stopped
 	}
 	
 	
@@ -486,10 +517,24 @@ public class MultiShimmerTemplateService extends Service {
 	            	   if (mGraphing==true && (objectCluster.mBluetoothAddress.equals(mGraphBluetoothAddress) || mGraphBluetoothAddress.equals(""))){
 	            		   mHandlerGraph.obtainMessage(Shimmer.MESSAGE_READ, objectCluster).sendToTarget();
 	            		   
-	            	   } 
-	            	   if (mWriting==true){
+	            	   }
+
+	            	   if (mWriting==true) {
+
 		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.mBluetoothAddress);
+
 		            	   if (shimmerLog1!=null){
+
+							   //If there is data from the Affectiva SDK, put it into objectCluster
+							   if(mEmotionData) {
+
+								   for(int i=0; i < 7; i++) {
+									   Log.v(AFFECTIVA, emotionLabels[i] + " score logged: " + String.format("%.2f", emotionScore[i]));
+									   objectCluster.mPropertyCluster.put(emotionLabels[i], new FormatCluster("NO FORMAT", "NO_UNIT",(double)emotionScore[i]));
+								   }
+							   }
+
+							   //Log the combined Shimmer device and Affectiva SDK data
 		            		   shimmerLog1.logData(objectCluster);
 		            		   
 		            	   } else{
@@ -503,6 +548,20 @@ public class MultiShimmerTemplateService extends Service {
 		            			}
 		            	   }
 	            	   }
+
+//	            	   //Added mEmotionData to capture data inflow from the Affectiva SDK
+//						if (mEmotionData) {
+//							affectivaLog1 = (Logging)mLogAffectiva.get(objectCluster.mBluetoothAddress);
+//							if(affectivaLog1 != null) {
+//								affectivaLog1.logData(objectCluster);
+//							}
+//							else {
+//								Logging affectivaLog;
+//								//public Logging(String myName,String delimiter, String folderName)
+//								affectivaLog = new Logging(fromMilisecToDate(System.currentTimeMillis()) + "Affectiva SDK");
+//							}
+//						}
+
 	            	   
 	            	}
 	                break;
